@@ -1702,6 +1702,7 @@ img {
 }
 
 .vsl-media {
+  position: relative;
   display: block;
   aspect-ratio: 16 / 9;
   min-height: 0;
@@ -1726,6 +1727,117 @@ img {
   aspect-ratio: 16 / 9;
   background: #050505;
   object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+.vsl-progress {
+  position: relative;
+  height: 8px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.vsl-progress span {
+  position: absolute;
+  inset: 0;
+  display: block;
+  transform-origin: left center;
+  background:
+    linear-gradient(90deg, #6e35ff, #9d68ff 52%, #d8c2ff),
+    #7c3cff;
+  box-shadow: 0 0 28px rgba(124, 60, 255, 0.64);
+  transition: transform 180ms linear;
+}
+
+.vsl-gate {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  line-height: normal;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(124, 60, 255, 0.16), transparent 36%),
+    linear-gradient(180deg, rgba(5, 5, 5, 0.42), rgba(5, 5, 5, 0.88));
+  backdrop-filter: blur(8px);
+}
+
+.vsl-gate.compact {
+  align-items: start;
+  justify-items: center;
+  padding-top: 18px;
+  background: linear-gradient(180deg, rgba(5, 5, 5, 0.5), transparent 48%);
+  backdrop-filter: none;
+  pointer-events: none;
+}
+
+.vsl-gate-card {
+  width: min(100%, 430px);
+  padding: 24px;
+  border: 1px solid rgba(157, 104, 255, 0.54);
+  border-radius: 8px;
+  background: rgba(12, 12, 12, 0.84);
+  color: var(--white);
+  text-align: center;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
+}
+
+.vsl-gate-card span {
+  color: #cdbaff;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.vsl-gate-card h3 {
+  margin: 10px 0 0;
+  font-size: clamp(1.35rem, 3vw, 2.1rem);
+  line-height: 1.02;
+}
+
+.vsl-gate-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.vsl-gate-actions.single {
+  grid-template-columns: 1fr;
+}
+
+.vsl-gate-actions button,
+.vsl-sound-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 14px;
+  border: 1px solid rgba(157, 104, 255, 0.74);
+  border-radius: 8px;
+  background: linear-gradient(180deg, #9d68ff, #6e35ff);
+  color: #fff;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 18px 44px rgba(124, 60, 255, 0.24);
+}
+
+.vsl-gate-actions button + button {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.88);
+  box-shadow: none;
+}
+
+.vsl-sound-button {
+  gap: 8px;
+  pointer-events: auto;
 }
 
 .play-orb {
@@ -1971,6 +2083,28 @@ img {
 
   .vsl-media {
     min-height: 0;
+  }
+
+  .vsl-gate {
+    padding: 14px;
+  }
+
+  .vsl-gate-card {
+    padding: 18px;
+  }
+
+  .vsl-gate-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .vsl-gate-actions button,
+  .vsl-sound-button {
+    min-height: 38px;
+    font-size: 0.66rem;
+  }
+
+  .vsl-progress {
+    height: 7px;
   }
 
   .play-orb {

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -22,6 +22,17 @@ import {
 } from "lucide-react";
 
 const CHECKOUT_URL = "https://kiwify.app/odPvP7h";
+const VSL_PROGRESS_KEY = "metodo-cpl-vsl-progress";
+const VSL_ENDED_KEY = "metodo-cpl-vsl-ended";
+
+function getVisualProgress(currentTime, duration) {
+  if (!duration || duration <= 0) return 0;
+  if (currentTime <= 15) return Math.min(50, (currentTime / 15) * 50);
+
+  const remainingDuration = Math.max(duration - 15, 1);
+  const remainingTime = Math.max(currentTime - 15, 0);
+  return Math.min(100, 50 + (remainingTime / remainingDuration) * 50);
+}
 
 const painCards = [
   {
@@ -209,38 +220,174 @@ function MarqueeTrack({ reverse = false }) {
 
 function VslPlayer() {
   const videoRef = useRef(null);
+  const savedTimeRef = useRef(0);
+  const [progress, setProgress] = useState(0);
+  const [needsInteraction, setNeedsInteraction] = useState(false);
+  const [showResume, setShowResume] = useState(false);
+  const [hasEnded, setHasEnded] = useState(false);
 
-  const enableSound = () => {
+  const playFrom = (startTime = 0) => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.currentTime = Math.max(startTime, 0);
+    video.muted = false;
+    video.volume = 1;
+    setShowResume(false);
+    setHasEnded(false);
+    window.localStorage.removeItem(VSL_ENDED_KEY);
+
+    video
+      .play()
+      .then(() => setNeedsInteraction(false))
+      .catch(() => {
+        video.muted = true;
+        video.play().catch(() => {});
+        setNeedsInteraction(true);
+      });
+  };
+
+  const unlockSound = () => {
     const video = videoRef.current;
     if (!video) return;
 
     video.muted = false;
     video.volume = 1;
+    video
+      .play()
+      .then(() => setNeedsInteraction(false))
+      .catch(() => {
+        video.muted = true;
+        video.play().catch(() => {});
+        setNeedsInteraction(true);
+      });
+  };
+
+  const keepPlaying = () => {
+    const video = videoRef.current;
+    if (!video || video.ended || showResume || hasEnded) return;
+
     video.play().catch(() => {});
+  };
+
+  const continueVideo = () => {
+    playFrom(savedTimeRef.current);
+  };
+
+  const restartVideo = () => {
+    savedTimeRef.current = 0;
+    window.localStorage.removeItem(VSL_PROGRESS_KEY);
+    playFrom(0);
+  };
+
+  useEffect(() => {
+    const savedTime = Number(window.localStorage.getItem(VSL_PROGRESS_KEY) || 0);
+    const ended = window.localStorage.getItem(VSL_ENDED_KEY) === "true";
+    savedTimeRef.current = ended ? 0 : savedTime;
+
+    if (ended) {
+      setHasEnded(true);
+      setProgress(100);
+      return;
+    }
+
+    if (savedTime > 3) {
+      setShowResume(true);
+      setProgress(0);
+      return;
+    }
+
+    playFrom(0);
+  }, []);
+
+  const handleTimeUpdate = () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const nextProgress = getVisualProgress(video.currentTime, video.duration);
+    setProgress(nextProgress);
+
+    if (video.currentTime > 1 && !video.ended) {
+      window.localStorage.setItem(VSL_PROGRESS_KEY, String(video.currentTime));
+      window.localStorage.removeItem(VSL_ENDED_KEY);
+    }
+  };
+
+  const handleEnded = () => {
+    setHasEnded(true);
+    setNeedsInteraction(false);
+    setShowResume(false);
+    setProgress(100);
+    window.localStorage.setItem(VSL_ENDED_KEY, "true");
+    window.localStorage.removeItem(VSL_PROGRESS_KEY);
   };
 
   return (
     <Reveal className="vsl-wrap" delay={0.08}>
-      <button className="sound-notice" type="button" onClick={enableSound}>
-        <Volume2 size={17} aria-hidden="true" />
-        <span>O vídeo já começou. Habilite o som.</span>
-      </button>
       <div className="vsl-player">
         <div className="vsl-media">
           <video
             ref={videoRef}
             className="vsl-video"
             autoPlay
-            muted
-            controls
-            controlsList="nodownload"
+            controlsList="nodownload nofullscreen noremoteplayback"
+            disablePictureInPicture
+            disableRemotePlayback
             playsInline
-            preload="metadata"
+            preload="auto"
             poster="/assets/matheus-hero.jpg"
+            tabIndex={-1}
+            onContextMenu={(event) => event.preventDefault()}
+            onEnded={handleEnded}
+            onPause={keepPlaying}
+            onTimeUpdate={handleTimeUpdate}
           >
             <source src="/assets/vsl-matheus.mp4" type="video/mp4" />
             Seu navegador não suporta a reprodução deste vídeo.
           </video>
+
+          {showResume && (
+            <div className="vsl-gate">
+              <div className="vsl-gate-card">
+                <span>Você parou no meio da VSL</span>
+                <h3>Quer continuar de onde parou?</h3>
+                <div className="vsl-gate-actions">
+                  <button type="button" onClick={continueVideo}>
+                    Continuar de onde parei
+                  </button>
+                  <button type="button" onClick={restartVideo}>
+                    Ver do início
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {needsInteraction && !showResume && !hasEnded && (
+            <div className="vsl-gate compact">
+              <button className="vsl-sound-button" type="button" onClick={unlockSound}>
+                <Volume2 size={18} aria-hidden="true" />
+                <span>O video ja comecou. Ativar som</span>
+              </button>
+            </div>
+          )}
+
+          {hasEnded && (
+            <div className="vsl-gate">
+              <div className="vsl-gate-card">
+                <span>VSL concluída</span>
+                <h3>Quer assistir novamente?</h3>
+                <div className="vsl-gate-actions single">
+                  <button type="button" onClick={restartVideo}>
+                    Ver novamente
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="vsl-progress" aria-hidden="true">
+          <span style={{ transform: `scaleX(${progress / 100})` }} />
         </div>
         <div className="vsl-footer" aria-hidden="true">
           <span>• VSL OFICIAL</span>
