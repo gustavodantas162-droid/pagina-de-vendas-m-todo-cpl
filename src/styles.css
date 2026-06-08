@@ -138,7 +138,7 @@ img {
   display: grid;
   grid-template-areas:
     "copy"
-    "vsl"
+    "video"
     "photo";
   grid-template-columns: 1fr;
   gap: 28px;
@@ -345,15 +345,15 @@ img {
   backdrop-filter: blur(12px);
 }
 
-.vsl-wrap {
-  grid-area: vsl;
+.video-wrap {
+  grid-area: video;
   width: 100%;
   position: relative;
   z-index: 2;
   margin-top: 12px;
 }
 
-.vsl-player {
+.video-player {
   display: grid;
   gap: 0;
   overflow: hidden;
@@ -365,13 +365,13 @@ img {
   box-shadow: 0 26px 70px rgba(0, 0, 0, 0.42);
 }
 
-.vsl-media {
+.video-media {
   position: relative;
   min-height: 200px;
   overflow: hidden;
 }
 
-.vsl-media::after {
+.video-media::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -380,7 +380,7 @@ img {
     linear-gradient(180deg, transparent, rgba(15, 15, 15, 0.74));
 }
 
-.vsl-media img {
+.video-media img {
   width: 100%;
   height: 100%;
   min-height: 200px;
@@ -406,11 +406,11 @@ img {
   transform: translate(-50%, -50%);
 }
 
-.vsl-copy {
+.video-copy {
   padding: 22px;
 }
 
-.vsl-copy h2 {
+.video-copy h2 {
   max-width: 830px;
   margin: 0;
   font-size: clamp(1.5rem, 6vw, 3.15rem);
@@ -1293,7 +1293,7 @@ img {
   .hero-grid {
     grid-template-areas:
       "copy photo"
-      "vsl vsl";
+      "video video";
     grid-template-columns: minmax(0, 0.95fr) minmax(390px, 0.72fr);
     gap: 32px;
   }
@@ -1312,21 +1312,21 @@ img {
     bottom: auto;
   }
 
-  .vsl-player {
+  .video-player {
     grid-template-columns: 0.72fr 1fr;
     align-items: stretch;
   }
 
-  .vsl-media,
-  .vsl-media img {
+  .video-media,
+  .video-media img {
     min-height: 270px;
   }
 
-  .vsl-wrap {
+  .video-wrap {
     margin-top: -74px;
   }
 
-  .vsl-copy {
+  .video-copy {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1375,7 +1375,7 @@ img {
     margin-right: -10px;
   }
 
-  .vsl-wrap {
+  .video-wrap {
     width: min(100%, 980px);
     margin-inline: auto;
   }
@@ -1514,7 +1514,7 @@ img {
 .hero-grid {
   grid-template-areas:
     "copy"
-    "vsl"
+    "video"
     "conversion";
   grid-template-columns: minmax(0, 1fr);
   justify-content: center;
@@ -1655,9 +1655,9 @@ img {
   color: var(--gold);
 }
 
-.vsl-wrap {
+.video-wrap {
   align-self: start;
-  grid-area: vsl;
+  grid-area: video;
   width: min(100%, 880px);
   margin: 0;
 }
@@ -1688,7 +1688,7 @@ img {
   flex: 0 0 auto;
 }
 
-.vsl-player {
+.video-player {
   display: block;
   width: 100%;
   overflow: hidden;
@@ -1701,7 +1701,7 @@ img {
     0 24px 90px rgba(0, 0, 0, 0.66);
 }
 
-.vsl-media {
+.video-media {
   position: relative;
   display: block;
   aspect-ratio: 16 / 9;
@@ -1711,16 +1711,16 @@ img {
   background: #050505;
 }
 
-.vsl-media::after,
-.vsl-media img,
-.vsl-copy,
+.video-media::after,
+.video-media img,
+.video-copy,
 .player-bar,
 .play-orb,
-.vsl-center-copy {
+.video-center-copy {
   display: none;
 }
 
-.vsl-video {
+.video-video {
   display: block;
   width: 100%;
   height: 100%;
@@ -1731,14 +1731,14 @@ img {
   user-select: none;
 }
 
-.vsl-progress {
+.video-progress {
   position: relative;
   height: 8px;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.08);
 }
 
-.vsl-progress span {
+.video-progress span {
   position: absolute;
   inset: 0;
   display: block;
@@ -1750,7 +1750,7 @@ img {
   transition: transform 180ms linear;
 }
 
-.vsl-gate {
+.video-gate {
   position: absolute;
   inset: 0;
   z-index: 4;
@@ -1764,7 +1764,7 @@ img {
   backdrop-filter: blur(8px);
 }
 
-.vsl-gate.compact {
+.video-gate.compact {
   align-items: start;
   justify-items: center;
   padding-top: 18px;
@@ -1773,7 +1773,7 @@ img {
   pointer-events: none;
 }
 
-.vsl-gate-card {
+.video-gate-card {
   width: min(100%, 430px);
   padding: 24px;
   border: 1px solid rgba(157, 104, 255, 0.54);
@@ -1784,7 +1784,7 @@ img {
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
 }
 
-.vsl-gate-card span {
+.video-gate-card span {
   color: #cdbaff;
   font-size: 0.68rem;
   font-weight: 900;
@@ -1792,25 +1792,25 @@ img {
   text-transform: uppercase;
 }
 
-.vsl-gate-card h3 {
+.video-gate-card h3 {
   margin: 10px 0 0;
   font-size: clamp(1.35rem, 3vw, 2.1rem);
   line-height: 1.02;
 }
 
-.vsl-gate-actions {
+.video-gate-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   margin-top: 20px;
 }
 
-.vsl-gate-actions.single {
+.video-gate-actions.single {
   grid-template-columns: 1fr;
 }
 
-.vsl-gate-actions button,
-.vsl-sound-button {
+.video-gate-actions button,
+.video-sound-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1829,13 +1829,13 @@ img {
   box-shadow: 0 18px 44px rgba(124, 60, 255, 0.24);
 }
 
-.vsl-gate-actions button + button {
+.video-gate-actions button + button {
   background: rgba(255, 255, 255, 0.06);
   color: rgba(255, 255, 255, 0.88);
   box-shadow: none;
 }
 
-.vsl-sound-button {
+.video-sound-button {
   gap: 8px;
   pointer-events: auto;
 }
@@ -1857,11 +1857,11 @@ img {
   height: 25px;
 }
 
-.vsl-center-copy {
+.video-center-copy {
   text-align: center;
 }
 
-.vsl-center-copy p {
+.video-center-copy p {
   margin: 0 0 5px;
   color: rgba(255, 255, 255, 0.92);
   font-size: 0.52rem;
@@ -1869,12 +1869,12 @@ img {
   letter-spacing: 0.56em;
 }
 
-.vsl-center-copy span {
+.video-center-copy span {
   color: rgba(255, 255, 255, 0.68);
   font-size: 0.62rem;
 }
 
-.vsl-footer {
+.video-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1886,7 +1886,7 @@ img {
   letter-spacing: 0.48em;
 }
 
-.vsl-footer span:first-child::first-letter {
+.video-footer span:first-child::first-letter {
   color: var(--gold);
 }
 
@@ -1943,7 +1943,7 @@ img {
   .hero-grid {
     grid-template-areas:
       "copy"
-      "vsl"
+      "video"
       "conversion";
     grid-template-columns: minmax(0, 1fr);
     gap: 16px;
@@ -1955,7 +1955,7 @@ img {
     max-width: 100%;
   }
 
-  .vsl-wrap {
+  .video-wrap {
     width: 100%;
     margin-top: 0;
   }
@@ -2081,29 +2081,29 @@ img {
     letter-spacing: 0.04em;
   }
 
-  .vsl-media {
+  .video-media {
     min-height: 0;
   }
 
-  .vsl-gate {
+  .video-gate {
     padding: 14px;
   }
 
-  .vsl-gate-card {
+  .video-gate-card {
     padding: 18px;
   }
 
-  .vsl-gate-actions {
+  .video-gate-actions {
     grid-template-columns: 1fr;
   }
 
-  .vsl-gate-actions button,
-  .vsl-sound-button {
+  .video-gate-actions button,
+  .video-sound-button {
     min-height: 38px;
     font-size: 0.66rem;
   }
 
-  .vsl-progress {
+  .video-progress {
     height: 7px;
   }
 
@@ -2112,11 +2112,11 @@ img {
     height: 56px;
   }
 
-  .vsl-center-copy p {
+  .video-center-copy p {
     letter-spacing: 0.38em;
   }
 
-  .vsl-footer {
+  .video-footer {
     padding: 0 10px;
     font-size: 0.43rem;
     letter-spacing: 0.24em;

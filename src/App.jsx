@@ -22,8 +22,8 @@ import {
 } from "lucide-react";
 
 const CHECKOUT_URL = "https://kiwify.app/odPvP7h";
-const VSL_PROGRESS_KEY = "metodo-cpl-vsl-progress";
-const VSL_ENDED_KEY = "metodo-cpl-vsl-ended";
+const VIDEO_PROGRESS_KEY = "metodo-cpl-video-progress-v2";
+const VIDEO_ENDED_KEY = "metodo-cpl-video-ended-v2";
 
 function getVisualProgress(currentTime, duration) {
   if (!duration || duration <= 0) return 0;
@@ -205,20 +205,7 @@ function Reveal({ children, className = "", delay = 0 }) {
   );
 }
 
-function MarqueeTrack({ reverse = false }) {
-  const text = reverse
-    ? "EXECUTIVO ◆ CLAREZA ◆ PRESENÇA ◆ LIDERANÇA ◆ AUTORIDADE ◆ INFLUÊNCIA ◆ RECONHECIMENTO"
-    : "PRESENÇA ◆ LIDERANÇA ◆ AUTORIDADE ◆ INFLUÊNCIA ◆ RECONHECIMENTO ◆ POSICIONAMENTO";
-  return (
-    <div className={`marquee-track ${reverse ? "reverse" : ""}`} aria-hidden="true">
-      {Array.from({ length: 4 }).map((_, index) => (
-        <span key={index}>{text}</span>
-      ))}
-    </div>
-  );
-}
-
-function VslPlayer() {
+function HeroVideoPlayer() {
   const videoRef = useRef(null);
   const savedTimeRef = useRef(0);
   const [progress, setProgress] = useState(0);
@@ -235,7 +222,7 @@ function VslPlayer() {
     video.volume = 1;
     setShowResume(false);
     setHasEnded(false);
-    window.localStorage.removeItem(VSL_ENDED_KEY);
+    window.localStorage.removeItem(VIDEO_ENDED_KEY);
 
     video
       .play()
@@ -276,13 +263,13 @@ function VslPlayer() {
 
   const restartVideo = () => {
     savedTimeRef.current = 0;
-    window.localStorage.removeItem(VSL_PROGRESS_KEY);
+    window.localStorage.removeItem(VIDEO_PROGRESS_KEY);
     playFrom(0);
   };
 
   useEffect(() => {
-    const savedTime = Number(window.localStorage.getItem(VSL_PROGRESS_KEY) || 0);
-    const ended = window.localStorage.getItem(VSL_ENDED_KEY) === "true";
+    const savedTime = Number(window.localStorage.getItem(VIDEO_PROGRESS_KEY) || 0);
+    const ended = window.localStorage.getItem(VIDEO_ENDED_KEY) === "true";
     savedTimeRef.current = ended ? 0 : savedTime;
 
     if (ended) {
@@ -308,8 +295,8 @@ function VslPlayer() {
     setProgress(nextProgress);
 
     if (video.currentTime > 1 && !video.ended) {
-      window.localStorage.setItem(VSL_PROGRESS_KEY, String(video.currentTime));
-      window.localStorage.removeItem(VSL_ENDED_KEY);
+      window.localStorage.setItem(VIDEO_PROGRESS_KEY, String(video.currentTime));
+      window.localStorage.removeItem(VIDEO_ENDED_KEY);
     }
   };
 
@@ -318,17 +305,17 @@ function VslPlayer() {
     setNeedsInteraction(false);
     setShowResume(false);
     setProgress(100);
-    window.localStorage.setItem(VSL_ENDED_KEY, "true");
-    window.localStorage.removeItem(VSL_PROGRESS_KEY);
+    window.localStorage.setItem(VIDEO_ENDED_KEY, "true");
+    window.localStorage.removeItem(VIDEO_PROGRESS_KEY);
   };
 
   return (
-    <Reveal className="vsl-wrap" delay={0.08}>
-      <div className="vsl-player">
-        <div className="vsl-media">
+    <Reveal className="video-wrap" delay={0.08}>
+      <div className="video-player">
+        <div className="video-media">
           <video
             ref={videoRef}
-            className="vsl-video"
+            className="video-video"
             autoPlay
             controlsList="nodownload nofullscreen noremoteplayback"
             disablePictureInPicture
@@ -338,20 +325,26 @@ function VslPlayer() {
             poster="/assets/matheus-hero.jpg"
             tabIndex={-1}
             onContextMenu={(event) => event.preventDefault()}
+            onCanPlay={() => {
+              const video = videoRef.current;
+              if (video && video.paused && !showResume && !hasEnded) {
+                playFrom(video.currentTime);
+              }
+            }}
             onEnded={handleEnded}
             onPause={keepPlaying}
             onTimeUpdate={handleTimeUpdate}
           >
-            <source src="/assets/vsl-matheus.mp4" type="video/mp4" />
+            <source src="/assets/apresentacao-matheus.mp4" type="video/mp4" />
             Seu navegador não suporta a reprodução deste vídeo.
           </video>
 
           {showResume && (
-            <div className="vsl-gate">
-              <div className="vsl-gate-card">
-                <span>Você parou no meio da VSL</span>
+            <div className="video-gate">
+              <div className="video-gate-card">
+                <span>Você parou no meio do vídeo</span>
                 <h3>Quer continuar de onde parou?</h3>
-                <div className="vsl-gate-actions">
+                <div className="video-gate-actions">
                   <button type="button" onClick={continueVideo}>
                     Continuar de onde parei
                   </button>
@@ -364,20 +357,20 @@ function VslPlayer() {
           )}
 
           {needsInteraction && !showResume && !hasEnded && (
-            <div className="vsl-gate compact">
-              <button className="vsl-sound-button" type="button" onClick={unlockSound}>
+            <div className="video-gate compact">
+              <button className="video-sound-button" type="button" onClick={unlockSound}>
                 <Volume2 size={18} aria-hidden="true" />
-                <span>O video ja comecou. Ativar som</span>
+                <span>O vídeo já começou. Ativar som</span>
               </button>
             </div>
           )}
 
           {hasEnded && (
-            <div className="vsl-gate">
-              <div className="vsl-gate-card">
-                <span>VSL concluída</span>
+            <div className="video-gate">
+              <div className="video-gate-card">
+                <span>Vídeo concluído</span>
                 <h3>Quer assistir novamente?</h3>
-                <div className="vsl-gate-actions single">
+                <div className="video-gate-actions single">
                   <button type="button" onClick={restartVideo}>
                     Ver novamente
                   </button>
@@ -386,28 +379,15 @@ function VslPlayer() {
             </div>
           )}
         </div>
-        <div className="vsl-progress" aria-hidden="true">
+        <div className="video-progress" aria-hidden="true">
           <span style={{ transform: `scaleX(${progress / 100})` }} />
         </div>
-        <div className="vsl-footer" aria-hidden="true">
-          <span>• VSL OFICIAL</span>
+        <div className="video-footer" aria-hidden="true">
+          <span>• APRESENTAÇÃO</span>
           <span>MATHEUS FAGUNDES</span>
         </div>
       </div>
     </Reveal>
-  );
-}
-
-function DiagonalMarquees() {
-  return (
-    <section className="diagonal-zone" aria-label="Clareza, presença e liderança">
-      <div className="diagonal-line diagonal-line-one">
-        <MarqueeTrack />
-      </div>
-      <div className="diagonal-line diagonal-line-two">
-        <MarqueeTrack reverse />
-      </div>
-    </section>
   );
 }
 
@@ -493,7 +473,7 @@ function App() {
               </motion.p>
             </div>
 
-            <VslPlayer />
+            <HeroVideoPlayer />
 
             <motion.div
               className="hero-conversion"
@@ -524,8 +504,6 @@ function App() {
             </motion.div>
           </div>
         </section>
-
-        <DiagonalMarquees />
 
         <section className="section pain-section">
           <Reveal className="section-heading">
