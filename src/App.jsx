@@ -93,23 +93,18 @@ const pillars = [
 const beforeItems = ["Boa entrega, pouca percepção", "Reuniões sem impacto", "Fala insegura", "Reconhecimento abaixo do valor real"];
 const afterItems = ["Mensagem clara", "Postura mais segura", "Autoridade percebida", "Influência em conversas decisivas", "Mais respeito profissional"];
 
-const deliveryCards = [
-  {
-    title: "Acesso ao Método C.P.L.",
-    text: "Você entra no treinamento principal para desenvolver comunicação profissional com clareza, presença e liderança."
-  },
-  {
-    title: "Estrutura em 3 pilares",
-    text: "Clareza para organizar ideias, presença para transmitir confiança e liderança para ser ouvido quando importa."
-  },
-  {
-    title: "Aplicação profissional",
-    text: "Direcionamento para reuniões, apresentações, conversas difíceis, negociações e momentos de posicionamento."
-  },
-  {
-    title: "Acesso imediato e garantia",
-    text: "Após a compra, você acessa o método pela plataforma e conta com 7 dias de garantia."
-  }
+const courseStats = [
+  { value: "+20", label: "aulas práticas" },
+  { value: "5", label: "módulos" },
+  { value: "+10", label: "bônus gratuitos" }
+];
+
+const courseModules = [
+  "Clareza de Posicionamento",
+  "Voz de Autoridade",
+  "Presença Executiva",
+  "Narrativa de Liderança",
+  "Comunicação de Impacto"
 ];
 
 const applicationCards = [
@@ -131,10 +126,10 @@ const applicationCards = [
 ];
 
 const offerIncludes = [
-  "Acesso ao treinamento Método C.P.L.",
-  "Comunicação estruturada nos pilares Clareza, Presença e Liderança.",
-  "Direcionamento para reuniões, apresentações e conversas decisivas.",
-  "Acesso imediato pela plataforma.",
+  "Mais de 20 aulas práticas do Método C.P.L.",
+  "5 módulos: Clareza, Voz, Presença, Narrativa e Impacto.",
+  "+10 bônus 100% gratuitos com materiais e PDFs de apoio.",
+  "Plano prático para aplicar o método no trabalho real.",
   "Garantia de 7 dias."
 ];
 
@@ -167,7 +162,7 @@ const faqItems = [
   {
     question: "O que eu recebo ao entrar?",
     answer:
-      "Você recebe acesso ao Método C.P.L., um treinamento de comunicação profissional estruturado nos pilares Clareza, Presença e Liderança, com aplicação para situações reais de trabalho."
+      "Você recebe mais de 20 aulas práticas divididas em 5 módulos, materiais de apoio em PDF, +10 bônus 100% gratuitos e um plano para aplicar o método no trabalho real."
   },
   {
     question: "Preciso ter experiência?",
@@ -279,8 +274,7 @@ function HeroVideoPlayer() {
     }
 
     if (savedTime > 3) {
-      setShowResume(true);
-      setProgress(0);
+      playFrom(savedTime);
       return;
     }
 
@@ -660,14 +654,42 @@ function App() {
         <section className="section deliverables-section">
           <Reveal className="section-heading">
             <p className="eyebrow">O QUE VOCÊ RECEBE</p>
-            <h2>O que você recebe ao entrar no Método C.P.L.</h2>
+            <h2>Um treinamento completo para destravar sua comunicação profissional.</h2>
           </Reveal>
-          <div className="delivery-grid">
-            {deliveryCards.map((item, index) => (
-              <Reveal className="delivery-card" key={item.title} delay={index * 0.04}>
+          <div className="course-overview">
+            <Reveal className="course-main-card">
+              <p className="eyebrow">ESTRUTURA COMPLETA</p>
+              <h3>Mais de 20 aulas práticas divididas em 5 módulos.</h3>
+              <p>
+                Você entra em um método direto para organizar ideias, transmitir autoridade, falar com
+                presença e se posicionar melhor em reuniões, apresentações, entrevistas e conversas de
+                decisão.
+              </p>
+              <div className="course-stats">
+                {courseStats.map((item) => (
+                  <div key={item.label}>
+                    <strong>{item.value}</strong>
+                    <span>{item.label}</span>
+                  </div>
+                ))}
+              </div>
+            </Reveal>
+
+            <Reveal className="course-bonus-card" delay={0.08}>
+              <Sparkles size={24} aria-hidden="true" />
+              <h3>+10 bônus 100% gratuitos</h3>
+              <p>
+                Além das aulas, você recebe materiais de apoio em PDF, checklists e mapas práticos para
+                aplicar o C.P.L. no trabalho real sem depender de improviso.
+              </p>
+            </Reveal>
+          </div>
+
+          <div className="module-grid">
+            {courseModules.map((module, index) => (
+              <Reveal className="module-card" key={module} delay={index * 0.04}>
                 <span>{String(index + 1).padStart(2, "0")}</span>
-                <h3>{item.title}</h3>
-                <p>{item.text}</p>
+                <h3>{module}</h3>
               </Reveal>
             ))}
           </div>
